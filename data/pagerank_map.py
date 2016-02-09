@@ -29,9 +29,11 @@ for line in sys.stdin:
     node, curr, prev, adjacencies = format_line(line)
     n = len(adjacencies)
 
+    '''
     if is_in_stopping_criteria(curr, prev):
         sys.stdout.write('FinalRank:%f\t%s\n' % (curr, node))
         continue
+    '''
 
     # Otherwise, we need to continue iterating for node
 

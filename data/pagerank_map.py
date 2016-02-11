@@ -16,13 +16,19 @@ for line in sys.stdin:
     node, curr, prev, adjacencies = format_line(line)
     n = len(adjacencies)
 
-    '''
-    if is_in_stopping_criteria(curr, prev):
-        sys.stdout.write('FinalRank:%f\t%s\n' % (curr, node))
-        continue
-    '''
-
-    # Otherwise, we need to continue iterating for node
+    # Get the current process iteration number and emit it.
+    iteration=0
+    keys = find_commas.split(node)
+    if len(keys) == 1:
+        # There is no iterator value
+        iteration=1
+    else:
+        # Increment the iterator
+        iteration = int(keys[1]) + 1
+        node = keys[0]
+        
+    # Print out the iteration data
+    sys.stdout.write('%s\tIteration:%s\n' % (node, str(iteration)))
 
     # Also print out curr (for new value of prev) and adjacencies
     sys.stdout.write('%s\tAdjacencies:%s\n' % (node, ','.join(adjacencies)))

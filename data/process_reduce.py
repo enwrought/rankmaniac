@@ -16,29 +16,22 @@ def format_line(line):
     values = find_commas.split(tmp_values)
     return (key, values[0], float(values[1]), ','.join(values[2:]))
 
-def is_final_rank(line):
-    ''' Checks whether line starts with 'FinalRank:'. '''
-    return len(line) > 10 and line[0:10] == 'FinalRank:'
-
-def is_in_stopping_criteria(curr, prev):
-    ''' Checks whether the stopping criteria is satisfies given current
-        and previous PageRank values.'''
-    return (curr - prev) ** 2 < 0.01
-
-
 done = []
 all_lines = []
-not_done_count = 0
+process_incomplete = False
 for line in sys.stdin:
     is_done, node, pagerank, remainder = format_line(line)
 
-    all_lines.append('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
-    if is_done:
-        done.append((node, pagerank))
+    if process_incomplete:
+        sys.stdout.write('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
     else:
-        not_done_count += 1
+        all_lines.append('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
+        if is_done:
+            done.append((node, pagerank))
+        else:
+            process_incomplete = True
 
-if not_done_count > 0:
+if process_incomplete:
     for line in all_lines:
         sys.stdout.write(line)
 else:

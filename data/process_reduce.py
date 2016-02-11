@@ -2,6 +2,7 @@
 
 import sys
 import re
+import math
 
 find_tabs = re.compile('\t')
 find_commas = re.compile(',')
@@ -9,24 +10,30 @@ find_colons = re.compile(':')
 
 def format_line(line):
     """
-        Returns (is_done, node, pagerank, remainder_of_line)
+        Returns (is_done, node, iteration, pagerank, remainder_of_line)
     """
     tmp_key, tmp_values = find_tabs.split(line.strip())
     key = tmp_key == 'done'
     values = find_commas.split(tmp_values)
-    return (key, values[0], float(values[1]), ','.join(values[2:]))
+    return (key, values[0], values[1], float(values[2]), ','.join(values[3:]))
 
 done = []
 all_lines = []
 process_incomplete = False
+final_iteration = False
 for line in sys.stdin:
-    is_done, node, pagerank, remainder = format_line(line)
+    is_done, node, iteration, pagerank, remainder = format_line(line)
+    
+    if int(iteration) >= 50:
+        final_iteration = True
 
     if process_incomplete:
+        node = str(node) + ',' + str(iteration)
         sys.stdout.write('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
     else:
-        all_lines.append('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
-        if is_done:
+        nInterVal = str(node) + ',' + str(iteration)
+        all_lines.append('NodeId:%s\t%f,%s\n' % (nInterVal, pagerank, remainder))
+        if is_done or final_iteration:
             done.append((node, pagerank))
         else:
             process_incomplete = True

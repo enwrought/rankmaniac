@@ -16,6 +16,8 @@ def format_line(line):
         return (key, value_type, float(value))
     elif value_type == 'Value':
         return (key, value_type, float(value))
+    elif value_type == 'Iteration':
+        return (key, value_type, value)
     else:
         raise Exception('Not a valid type.')
 
@@ -36,6 +38,7 @@ curr_sum = 0
 curr_count = 0
 curr_prev = 0
 curr_adjacencies = ''
+curr_iteration = '0'
 
 for line in sys.stdin:
     if is_final_rank(line):
@@ -46,14 +49,16 @@ for line in sys.stdin:
     if node != curr_node:
         # print out info on previous node
         if curr_node != '':
-            print_output(curr_node, ALPHA * curr_sum + 1-ALPHA,
-                    curr_prev, curr_adjacencies)
+            print_output(curr_node + ',' + curr_iteration, 
+                         ALPHA * curr_sum + 1-ALPHA,
+                         curr_prev, curr_adjacencies)
         # reset values
         curr_node = node
         curr_sum = 0
         curr_count = 0
         curr_prev = 0
         curr_adjacencies = ''
+        curr_iteration = '0'
 
     if value_type == 'Adjacencies':
         curr_adjacencies = value
@@ -62,8 +67,13 @@ for line in sys.stdin:
     elif value_type == 'Value':
         curr_sum += value
         curr_count += 1
+    elif value_type == 'Iteration':
+        curr_iteration = value
+        # Add a padding zero if iteration number is less than 10.
+        #if len(curr_iteration) == 1:
+        #    curr_iteration = '0' + curr_iteration
 
 
 if curr_node != '':
-    print_output(curr_node, ALPHA * curr_sum + 1-ALPHA,
+    print_output(curr_node + ',' + curr_iteration, ALPHA * curr_sum + 1-ALPHA,
             curr_prev, curr_adjacencies)

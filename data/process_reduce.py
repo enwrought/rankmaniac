@@ -10,41 +10,56 @@ find_colons = re.compile(':')
 
 def format_line(line):
     """
-        Returns (is_done, node, iteration, pagerank, remainder_of_line)
+        Returns (pagerank, node, iteration, prev_pagerank, remainder_of_line)
     """
-    tmp_key, tmp_values = find_tabs.split(line.strip())
-    key = tmp_key == 'done'
+    str_pagerank, tmp_values = find_tabs.split(line.strip())
     values = find_commas.split(tmp_values)
-    return (key, values[0], values[1], float(values[2]), ','.join(values[3:]))
+    return (float(str_pagerank), values[0], values[1], float(values[2]), ','.join(values[3:]))
+
+def is_in_stopping_criteria(curr, prev):
+    ''' Checks whether the stopping criteria is satisfies given current
+        and previous PageRank values.'''
+    return (curr - prev) ** 2 < 0.001
+
 
 done = []
-all_lines = []
+first_20_lines = []
 process_incomplete = False
 final_iteration = False
+
+might_finish = True
+count = 0
 for line in sys.stdin:
-    is_done, node, iteration, pagerank, remainder = format_line(line)
-    
-    if int(iteration) >= 50:
-        final_iteration = True
+    pagerank, node, iteration, prev, remainder = format_line(line)
 
-    if process_incomplete:
-        node = str(node) + ',' + str(iteration)
-        sys.stdout.write('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
+    # If max iter, we just print it out
+    if int(iteration) >= 48 and count < 20:
+        sys.stdout.write('FinalRank:%f\t%s\n' % (pagerank, node))
+    if int(iteration) >= 48 and count >= 20:
+        break
+
+    # Check if we meet stopping criteria
+    if count < 20 and might_finish:
+        comma = ',' if len(remainder) > 0 else ''
+        first_20_lines.append('NodeId:%s,%s\t%f,%f%s%s\n' % (node, iteration,
+            pagerank, prev, comma, remainder))
+        done.append((node, pagerank))
+        might_finish = is_in_stopping_criteria(pagerank, prev)
+    elif count >= 20 and might_finish:
+        # print out and done
+        for i in xrange(len(ranked)):
+            sys.stdout.write('FinalRank:%f\t%s\n' % (done[i][1], done[i][0]))
+        break
     else:
-        nInterVal = str(node) + ',' + str(iteration)
-        all_lines.append('NodeId:%s\t%f,%s\n' % (nInterVal, pagerank, remainder))
-        if is_done or final_iteration:
-            done.append((node, pagerank))
-        else:
-            process_incomplete = True
+        # count >= 20 and not might_finish: or
+        # count < 20 and not might_finish
+        comma = ',' if len(remainder) > 0 else ''
+        sys.stdout.write('NodeId:%s,%s\t%f,%f%s%s\n' % (node, iteration, pagerank, prev,
+            comma, remainder))
 
-if process_incomplete:
-    for line in all_lines:
+if not might_finish:
+    for line in first_20_lines:
         sys.stdout.write(line)
-else:
-    ranked = sorted(done, key = lambda item: item[1], reverse=True)
-    for i in xrange(min(20, len(ranked))):
-        sys.stdout.write('FinalRank:%f\t%s\n' % (ranked[i][1], ranked[i][0]))
 
 
 

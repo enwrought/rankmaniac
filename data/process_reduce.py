@@ -19,26 +19,22 @@ def format_line(line):
 
 done = []
 all_lines = []
-process_incomplete = False
 final_iteration = False
 for line in sys.stdin:
     is_done, node, iteration, pagerank, remainder = format_line(line)
-    
-    if int(iteration) >= 50:
+
+    if int(iteration) >= 48:
         final_iteration = True
 
-    if process_incomplete:
+    if not final_iteration:
         node = str(node) + ',' + str(iteration)
         sys.stdout.write('NodeId:%s\t%f,%s\n' % (node, pagerank, remainder))
     else:
         nInterVal = str(node) + ',' + str(iteration)
         all_lines.append('NodeId:%s\t%f,%s\n' % (nInterVal, pagerank, remainder))
-        if is_done or final_iteration:
-            done.append((node, pagerank))
-        else:
-            process_incomplete = True
+        done.append((node, pagerank))
 
-if process_incomplete:
+if not final_iteration:
     for line in all_lines:
         sys.stdout.write(line)
 else:

@@ -18,4 +18,4 @@ for line in sys.stdin:
     comma = ',' if len(adjacencies) > 0 else ''
 
     sys.stdout.write('%f\t%s,%f%s%s\n' %
-                (curr, node, prev, comma, ','.join(adjacencies)))
+                (1000000-curr, node, prev, comma, ','.join(adjacencies)))

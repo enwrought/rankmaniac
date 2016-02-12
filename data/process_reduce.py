@@ -14,7 +14,7 @@ def format_line(line):
     """
     str_pagerank, tmp_values = find_tabs.split(line.strip())
     values = find_commas.split(tmp_values)
-    return (float(str_pagerank), values[0], values[1], float(values[2]), ','.join(values[3:]))
+    return (1000000-float(str_pagerank), values[0], values[1], float(values[2]), ','.join(values[3:]))
 
 def is_in_stopping_criteria(curr, prev):
     ''' Checks whether the stopping criteria is satisfies given current
@@ -29,6 +29,14 @@ final_iteration = False
 
 might_finish = True
 count = 0
+'''
+copy = []
+for line in sys.stdin:
+    copy.append(line)
+
+copy.reverse()
+for line in copy:
+    '''
 for line in sys.stdin:
     pagerank, node, iteration, prev, remainder = format_line(line)
 
@@ -47,7 +55,7 @@ for line in sys.stdin:
         might_finish = is_in_stopping_criteria(pagerank, prev)
     elif count >= 20 and might_finish:
         # print out and done
-        for i in xrange(len(ranked)):
+        for i in xrange(len(done)):
             sys.stdout.write('FinalRank:%f\t%s\n' % (done[i][1], done[i][0]))
         break
     else:
@@ -56,6 +64,7 @@ for line in sys.stdin:
         comma = ',' if len(remainder) > 0 else ''
         sys.stdout.write('NodeId:%s,%s\t%f,%f%s%s\n' % (node, iteration, pagerank, prev,
             comma, remainder))
+    count += 1
 
 if not might_finish:
     for line in first_20_lines:

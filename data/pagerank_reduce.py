@@ -38,6 +38,10 @@ curr_sum = 0
 curr_count = 0
 curr_prev = 0
 curr_adjacencies = ''
+# To ensure that every node is on the same iteration (since some nodes may be
+# generated after the first iteration, such as if a node with no adjencies is
+# not explicitly defined in the input), the iteration value should not be
+# reset as the other values are
 curr_iteration = '0'
 
 for line in sys.stdin:
@@ -58,7 +62,6 @@ for line in sys.stdin:
         curr_count = 0
         curr_prev = 0
         curr_adjacencies = ''
-        curr_iteration = '0'
 
     if value_type == 'Adjacencies':
         curr_adjacencies = value
@@ -68,11 +71,8 @@ for line in sys.stdin:
         curr_sum += value
         curr_count += 1
     elif value_type == 'Iteration':
-        curr_iteration = value
-        # Add a padding zero if iteration number is less than 10.
-        #if len(curr_iteration) == 1:
-        #    curr_iteration = '0' + curr_iteration
-
+        if int(value) > int(curr_iteration):
+            curr_iteration = value
 
 if curr_node != '':
     print_output(curr_node + ',' + curr_iteration, ALPHA * curr_sum + 1-ALPHA,

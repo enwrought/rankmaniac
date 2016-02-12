@@ -15,7 +15,7 @@ def format_line(line):
 def is_in_stopping_criteria(curr, prev):
     ''' Checks whether the stopping criteria is satisfies given current
         and previous PageRank values.'''
-    return (curr - prev) ** 2 < 0.00001
+    return (curr - prev) ** 2 < 0.001
 
 for line in sys.stdin:
     node, curr, prev, adjacencies = format_line(line)

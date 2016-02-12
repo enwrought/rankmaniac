@@ -16,12 +16,17 @@ def format_line(line):
     values = find_commas.split(tmp_values)
     return (1000000-float(str_pagerank), values[0], values[1], float(values[2]), ','.join(values[3:]))
 
+EPSILON = 0.001
+MULTIPLIER = 1
 def is_in_stopping_criteria(curr, prev):
     ''' Checks whether the stopping criteria is satisfies given current
         and previous PageRank values.'''
-    return (curr - prev) ** 2 < 0.001
+    return (curr - prev) ** 2 < EPSILON
 
 
+
+largest_page_rank = 1
+page_rank_20 = 1
 done = []
 first_20_lines = []
 process_incomplete = False
@@ -46,6 +51,12 @@ for line in sys.stdin:
     if int(iteration) >= 48 and count >= 20:
         break
 
+    if count == 0:
+        largest_page_rank = pagerank
+    elif count == 19:
+        page_rank_20 = pagerank
+    MULTIPLIER = (largest_page_rank - page_rank_20) / 10
+
     # Check if we meet stopping criteria
     if count < 20 and might_finish:
         comma = ',' if len(remainder) > 0 else ''
@@ -61,6 +72,10 @@ for line in sys.stdin:
     else:
         # count >= 20 and not might_finish: or
         # count < 20 and not might_finish
+        if int(iteration) > 6 and int(iteration) % 3 == 0:
+            n = len(find_commas.split(remainder))
+            if pagerank / n < MULTIPLIER * EPSILON:
+                continue
         comma = ',' if len(remainder) > 0 else ''
         sys.stdout.write('NodeId:%s,%s\t%f,%f%s%s\n' % (node, iteration, pagerank, prev,
             comma, remainder))

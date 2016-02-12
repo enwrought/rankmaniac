@@ -26,7 +26,7 @@ for line in sys.stdin:
         # Increment the iterator
         iteration = int(keys[1]) + 1
         node = keys[0]
-        
+
     # Print out the iteration data
     sys.stdout.write('%s\tIteration:%s\n' % (node, str(iteration)))
 
@@ -37,3 +37,5 @@ for line in sys.stdin:
     # Contribution from node to adj_node
     for adj_node in adjacencies:
         sys.stdout.write('%s\tValue:%f\n' % (adj_node, curr/n))
+    if len(adjacencies) == 0:
+        sys.stdout.write('%s\tValue:1.0\n' % node)

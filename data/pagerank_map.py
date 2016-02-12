@@ -38,4 +38,4 @@ for line in sys.stdin:
     for adj_node in adjacencies:
         sys.stdout.write('%s\tValue:%f\n' % (adj_node, curr/n))
     if len(adjacencies) == 0:
-        sys.stdout.write('%s\tValue:1.0\n' % node)
+        sys.stdout.write('%s\tValue:%f\n' % (node, curr))

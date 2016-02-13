@@ -55,7 +55,7 @@ for line in sys.stdin:
         largest_page_rank = pagerank
     elif count == 19:
         page_rank_20 = pagerank
-    MULTIPLIER = (largest_page_rank - page_rank_20) / 10
+    MULTIPLIER = (largest_page_rank - page_rank_20) / 20
 
     # Check if we meet stopping criteria
     if count < 20 and might_finish:

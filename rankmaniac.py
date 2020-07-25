@@ -437,8 +437,8 @@ class Rankmaniac:
                                                  steps=steps,
                                                  num_instances=num_instances,
                                                  log_uri=log_uri,
-                                                 master_instance_type='m1.medium',
-                                                 slave_instance_type='m1.medium',
+                                                 main_instance_type='m1.medium',
+                                                 subordinate_instance_type='m1.medium',
                                                  ami_version='3.11.0',
                                                  job_flow_role='EMR_EC2_DefaultRole',
                                                  service_role='EMR_DefaultRole')
